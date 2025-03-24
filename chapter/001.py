@@ -36,7 +36,7 @@ yk_health = 0
 version = "Preview 0.02a"
 oldknifeisok = True
 devmode = configRead["devmode"]
-devmodepwd = base64.b64decode(b'bGlmZWlzdG91aG91')
+devmodepwd = base64.b64decode(b'bGlmZWlzdG91aG91') # lifeistouhou
 seledatk = False
 local_health = 3500
 
@@ -52,7 +52,7 @@ if devmode == "false":
     resetconf()
 
 if devmode == "true":
-    devmodepwdinput = input()
+    devmodepwdinput = input("输入开发模式密码 > ")
     if bytes(devmodepwdinput, encoding="utf-8") == devmodepwd:
         spellremain = 9999
         overdrive_remain = 9999
@@ -237,7 +237,9 @@ while True:
     elif ykatk == "2":
         sfx_ok00.play()
         if spellremain <= 0:
-            pass
+            print("符卡不足")
+            time.sleep(1)
+            continue
         print("奇迹「七彩大炮」！！")
         time.sleep(1)
         sfx_nep00.play()
@@ -258,3 +260,4 @@ while True:
             time.sleep(1)
         else:
             print("没用。(可用为0或仍处于超载模式中)")
+            time.sleep(1)
