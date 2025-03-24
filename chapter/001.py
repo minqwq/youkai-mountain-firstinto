@@ -8,7 +8,6 @@ import sys
 import json
 import random
 import time
-from python_goto import goto
 import base64
 
 # 防御的计算方式是 "<受伤值> / <防御>"
@@ -121,7 +120,7 @@ def attacking():
             time.sleep(1)
 ''']
 
-spellatklo = 350
+randomchoice = '''spellatklo = 350
 spellatkhi = 700
 
 curyoukainame = random.choice(tiny_youkais)
@@ -148,8 +147,8 @@ elif curyoukainame == "小女仆":
 elif curyoukainame == "小妖精":
     yk_defend = 1.1
     yk_attack = random.randint(40, 60)
-    yk_health = 1000
-    
+    yk_health = 1000'''
+exec(randomchoice)    
 
 while True:
     if overdrive_mode >= 1:
@@ -159,8 +158,8 @@ while True:
     if yk_health <= 0:
         sfx_pldead00.play()
         local_health += yk_health / 8 + 350
-        goto(line=125)
-    os.system("clear")
+        exec(randomchoice)  
+    clearScreen()
     print("(这是水印)这是一个体验版本，不代表做完后的样子。\n版本 " + version + "\n")
     print("当前妖怪名字: " + curyoukainame)
     print("防 " + str(yk_defend) + ", 攻 " + str(yk_attack) + ", 对方当前血量: " + str(yk_health))

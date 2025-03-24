@@ -26,11 +26,11 @@ print("妖之山 Project 初探\nYoukai Mountain Project - First into mountain")
 print("-- a Fighting game like rpg but its not rpg --")
 mainchoice = input("\n1:Start\n2:Prac. Start\n3:Score Ranking\n4:Options\n5:Exit\nSelect choice >>> ")
 if mainchoice == "1":
-    os.system(sys.executable + " chapter/001.py")
+    exec(open(os.path.dirname(os.path.abspath(__file__)) + os.sep + "chapter" + os.sep + "001.py", encoding="utf-8").read())
 elif mainchoice == "2":
     # TODO: 显示可用代码文件
     choice02 = input("select chapter: ")
-    os.system(sys.executable + " chapter/" + choice02.rjust(3, "0") + ".py")
+    exec(open(os.path.dirname(os.path.abspath(__file__)) + os.sep + "chapter" + os.sep + choice02.rjust(3, "0") + ".py", encoding="utf-8").read())
 elif mainchoice == "3":
     cat("score/ranking.txt") # 这个可能是没有做
 elif mainchoice == "5":
