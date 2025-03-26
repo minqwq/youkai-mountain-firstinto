@@ -1,6 +1,9 @@
 import os
 import sys
 import time
+import pygame
+pygame.mixer.init()
+pygame.mixer.music.load("./music/gf_01_01_03.mp3")
 try:
     isWindows = sys.platform.startswith('win')
 
@@ -20,6 +23,7 @@ try:
     print("Flandre Studio & mibino")
     time.sleep(3)
     while True:
+        pygame.mixer.music.play()
         clearScreen()
         print("妖之山 Project 初探")
         print("Youkai Mountain Project - First into mountain")
