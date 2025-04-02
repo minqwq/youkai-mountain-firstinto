@@ -20,7 +20,7 @@ try:
             os.system("clear")
 
     clearScreen()
-    print("Flandre Studio & mibino")
+    print("\033[0mFlandre Studio & mibino")
     time.sleep(3)
     while True:
         pygame.mixer.music.play()
@@ -31,7 +31,7 @@ try:
         print()
         print("1:Start")
         print("2:Prac. Start")
-        print("3:Score Ranking")
+        print("3:Score Ranking") # 这是最高分吗
         print("4:Options")
         print("5:Exit")
         mainchoice = input("Select choice >>> ")
@@ -42,7 +42,16 @@ try:
             choice02 = input("select chapter: ")
             exec(open(os.path.dirname(os.path.abspath(__file__)) + os.sep + "chapter" + os.sep + choice02.rjust(3, "0") + ".py", encoding="utf-8").read())
         elif mainchoice == "3":
-            cat("score/ranking.txt") # 这个可能是没有做
+            try:
+                ranking = open(os.path.dirname(os.path.abspath(__file__)) + os.sep + "score" + os.sep + "ranking.txt", encoding="utf-8").read().strip()
+                if len(ranking) == 0:
+                    print("No last score saved")
+                else:
+                    score =  ranking.split(" ")
+                    print("Last score was " + str(score[0]) + (" on " + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(score[1]))) if len(score) > 1 else ""))
+            except ValueError:
+                print("ValueError")
+            input("Press Enter to return")
         elif mainchoice == "5":
             sys.exit()
 except EOFError:
