@@ -1,6 +1,6 @@
 # THIS IS A DEMO VERSION AND NOT ARE THE RELEASE VERSION EXPRIENCE
 # Flandre Studio 20250326
-# Copyright (c) 2025 minqwq
+# Copyright (c) 2025 minqwq, wusheng233
 
 import pygame
 import os
@@ -8,9 +8,33 @@ import sys
 import json
 import random
 import time
+from module.actions import *
+
+def runSubProgram(pathtoapp):
+    if isWindows == "true":
+        os.system("python " + pathtoapp)
+    elif isWindows == "false":
+        if venvEnable == "true":
+            if replace_python_command_to_python3 == "true":
+                os.system(venvPath + "3 " + pathtoapp)
+            elif replace_python_command_to_python3 == "false":
+                os.system(venvPath + " " + pathtoapp)
+            else:
+                print("Config incorrect at \"replace_python_command_to_python3\"")
+                print("check it on config/conf.json\nif you need help please contact minqwq723897@outlook.com")
+                sys.exit()
+        else: # too --minqwq
+            if replace_python_command_to_python3 == "true":
+                os.system("python " + pathtoapp)
+            elif replace_python_command_to_python3 == "false":
+                os.system("python3 " + pathtoapp)
+            else:
+                print("Config incorrect at \"replace_python_command_to_python3\"")
+                print("check it on config/conf.json\nif you need help please contact minqwq723897@outlook.com")
+                sys.exit()
 
 class Chapter1:
-    VERSION = "Preview 0.02b"
+    VERSION = "Preview 0.03a"
     gameconfig = {}
     sounds = {}
     curyoukai = {}
@@ -21,6 +45,8 @@ class Chapter1:
     overdrivemode = False
     spells = 0
     gamedevmode = False
+    yourName = ""
+    # remainYoukais = 20
     boss = [
         {"name": "Eduarte", "defend": 4, "attack": {"start": 90, "stop": 180}, "health": 3000}
     ]
@@ -38,11 +64,17 @@ class Chapter1:
         {"name": "脚踢", "damage": {"start": 80, "stop": 130}, "overdrive": {"start": 200, "stop": 350}, "broken": False},
     ]
     def __init__(self):
+        self.yourName = ""
         self.gamedir = os.path.dirname(os.path.abspath(__file__)) + os.sep
         self.gameconfig = json.load(open(self.gamedir + "config.json", "r", encoding="utf-8"))
         self.overdrives = int(self.gameconfig["overdrives"])
         self.spells = int(self.gameconfig["spells"])
         self.gamedevmode = self.gameconfig["devmode"] == "true"
+        self.venvEnable = self.gameconfig["venvEnable"]
+        self.venvPath = self.gameconfig["venvPath"]
+        self.replace_python_command_to_python3 = self.gameconfig["replace_python_command_to_python3"]
+        self.isWindows = self.gameconfig["isWindows"]
+        self.remainYoukais = 5
         if self.gamedevmode:
             self.tiny_youkais.append({"name": "test", "defend": {"start": 0.5, "stop": 4.0}, "attack": {"start": 10, "stop": 200}, "health": {"start": 100, "stop": 3000}})
             self.weapons.append({"name": "test", "damage": 10, "overdrive": 20, "broken": False})
@@ -80,10 +112,18 @@ class Chapter1:
             print("\033[91m")
         else:
             print("\033[0m")
+        if self.curyoukai["name"] == "Eduarte":
+            if self.curyoukai["health"] <= 0:
+                return
+        if self.remainYoukais <= 0:
+            self.randomChoice(self.boss)
+        elif self.remainYoukais > 0:
+            self.remainYoukais -= 1
+                
         print("(这是水印)这是一个体验版本，不代表做完后的样子。")
         print("如果发现bug请反馈到邮箱 minqwq723897@outlook.com")
         print("版本 " + self.VERSION)
-        print()
+        print("\ndebugs: " + str(self.remainYoukais))
         print("当前妖怪名字: " + self.curyoukai["name"])
         print("防 " + str(self.curyoukai["defend"]) + ", 攻 " + str(self.curyoukai["attack"]) + ", 对方当前血量: " + str(self.curyoukai["health"]))
         print("分数 " + str(round(self.gamescore)) + ", 可再超载 " + str(self.overdrives) + " 次, 还有 " + str(self.spells) + " 个灵符")
@@ -205,9 +245,27 @@ class Chapter1:
             self.curyoukai["attack"] = random.randint(self.curyoukai["attack"]["start"], self.curyoukai["attack"]["stop"])
         if isinstance(self.curyoukai["health"], dict):
             self.curyoukai["health"] = random.randint(self.curyoukai["health"]["start"], self.curyoukai["health"]["stop"])
-    def saveRanking(self): # 不明白什么是分数保存跟Score Ranking
-        with open("score/ranking.txt", "w", encoding="utf-8") as f:
-            f.write(str(round(self.gamescore)) + " " + str(round(time.time())))
+    def saveRanking(self):
+        # 只在游戏结束或章节完成时保存
+        if self.playerhealth <= 0 or (self.curyoukai["name"] == "Eduarte" and self.curyoukai["health"] <= 0):
+            yourName = ""
+            nextChapterSel = ""
+            while yourName == "":
+                yourName = input("输入你的名字...\n> ")
+                
+            with open("score/ranking.txt", "a", encoding="utf-8") as f:
+                f.write("\n================| " + time.asctime() + " |================\n")
+                f.write("Chapter 1 | 分数 " + str(round(self.gamescore)) + " | 由 " + yourName + " 达成\n")
+                
+            while nextChapterSel == "":
+                nextChapterSel = input("下一章(1)还是退出(2)？[1/2] ")
+                if nextChapterSel == "1":
+                    runSubProgram("chapter/002.py")
+                    print("(这里暂停一秒是因为看不到报错)")
+                    time.sleep(1)
+                elif nextChapterSel == "2":
+                    sys.exit()
 
 Chapter1()
+Chapter1.saveRanking()
 pygame.mixer.music.stop() # 在完成章节后停掉音乐

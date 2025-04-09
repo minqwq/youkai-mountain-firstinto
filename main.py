@@ -2,6 +2,17 @@ import os
 import sys
 import time
 import pygame
+
+def cat(file):
+    try:
+        tmp_catcore = open(file, "r", encoding="utf-8")
+        for content in tmp_catcore:
+            print(content, end="")
+            time.sleep(0.01)
+        print("")
+    except FileNotFoundError:
+        print("ERROR: file not found: " + file)
+
 pygame.mixer.init()
 pygame.mixer.music.load("./music/gf_01_01_03.mp3")
 try:
@@ -32,7 +43,7 @@ try:
         print("1:Start")
         print("2:Prac. Start")
         print("3:Score Ranking") # 这是最高分吗
-        print("4:Options")
+        print("4:Options")       # 回上一行，不是 --minqwq
         print("5:Exit")
         mainchoice = input("Select choice >>> ")
         if mainchoice == "1":
@@ -42,15 +53,7 @@ try:
             choice02 = input("select chapter: ")
             exec(open(os.path.dirname(os.path.abspath(__file__)) + os.sep + "chapter" + os.sep + choice02.rjust(3, "0") + ".py", encoding="utf-8").read())
         elif mainchoice == "3":
-            try:
-                ranking = open(os.path.dirname(os.path.abspath(__file__)) + os.sep + "score" + os.sep + "ranking.txt", encoding="utf-8").read().strip()
-                if len(ranking) == 0:
-                    print("No last score saved")
-                else:
-                    score =  ranking.split(" ")
-                    print("Last score was " + str(score[0]) + (" on " + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(score[1]))) if len(score) > 1 else ""))
-            except ValueError:
-                print("ValueError")
+            cat("score/ranking.txt")
             input("Press Enter to return")
         elif mainchoice == "5":
             sys.exit()

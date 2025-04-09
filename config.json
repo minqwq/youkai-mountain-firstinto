@@ -1,5 +1,9 @@
 {
-    "devmode": "false",
+    "devmode": "true",
     "overdrives": "4",
-    "spells": "3"
+    "spells": "3",
+    "isWindows": "false",
+    "replace_python_command_to_python3": "true",
+    "venvEnable": "true",
+    "venvPath": "~/pyvenv/bin/python"
 }
